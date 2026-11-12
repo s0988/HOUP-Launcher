@@ -1,12 +1,10 @@
-#define UNICODE
-#define _UNICODE
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <windowsx.h>
-#include <commdlg.h>
-#include <shellapi.h>
+#include <objidl.h>
 #include <gdiplus.h>
 #include <string>
+#include <vector>
 #include <algorithm>
 
 #pragma comment(lib, "gdiplus.lib")
