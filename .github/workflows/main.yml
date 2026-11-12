@@ -1,0 +1,39 @@
+
+name: Build HOUP.exe
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Download source
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build launcher
+        shell: cmd
+        run: BUILD_WINDOWS.bat
+
+      - name: Prepare files
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem -Path . -Filter HOUP.exe -Recurse | Select-Object -First 1
+          if (-not $exe) { throw "HOUP.exe was not created" }
+          New-Item -ItemType Directory -Force -Path HOUP-Windows-x64 | Out-Null
+          Copy-Item $exe.FullName HOUP-Windows-x64/HOUP.exe
+          if (Test-Path assets) {
+            Copy-Item assets HOUP-Windows-x64/assets -Recurse
+          }
+
+      - name: Upload HOUP.exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: HOUP-Windows-x64
+          path: HOUP-Windows-x64
